@@ -1,5 +1,4 @@
 /********* Fonts **********/
-
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
@@ -197,8 +196,20 @@ span {
 	color: #FF630D;
 }
 
+
+
 #menu-divide {
 	color: #FFFFFF;
 	display: inline;
 	margin: 0;
+}
+
+#poll-list span {
+	display: inline-block;
+	width: 100px;
+	float: right;
+}
+.chart-wrapper {
+	width: 60%;
+	min-width: 300px;
 }
