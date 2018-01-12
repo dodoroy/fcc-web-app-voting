@@ -6,6 +6,7 @@ function PollHandler () {
 	
 	// get poll list
 	this.getPolls = function (req, res) {
+		
 		Polls
 			.find({}, { '_id': false })
 			.exec(function (err, result) {
@@ -17,12 +18,11 @@ function PollHandler () {
 	
 	// get a poll
 	this.getPoll = function (req, res) {
-		console.log(req.params)
-		console.log(req.body)
-		console.log(req.query)
+		
 		var id = req.params.id;
+		
 		Polls
-			.find({id: id}, { '_id': false })
+			.find({ id: id }, { '_id': false })
 			.exec(function (err, result) {
 				if (err) { throw err; }
 
@@ -33,19 +33,18 @@ function PollHandler () {
 	// add a poll
 	this.addPoll = function (req, res) {
 		console.log(req.body);
+		
 		var pollInfo = req.body;
 		
 		var newPoll = new Polls();
 		newPoll.id = Date.now().toString();
 		newPoll.userId = 'idid';//req.user.github.id;
 		newPoll.pollname = pollInfo.pollname;
-		newPoll.options = []; 
+		newPoll.options = {}; 
 		for (var i = 0; i < 2; i++) {
-			var tmp = {};
-			tmp[pollInfo.option[i]] = 0;
-			newPoll.options.push(tmp);
+			newPoll.options[pollInfo.option[i]] = 0;
 		}
-	
+
 		newPoll.save(function (err) {
 			if (err) {
 				throw err;
@@ -58,33 +57,40 @@ function PollHandler () {
 
 	// delete a poll
 	this.deletePoll = function (req, res) {
-		var pollId = req.query.id;
+		var id = req.params.id;
 		
 		Polls
-			.findOneAndUpdate({ pollname: pollId }, { })
+			.remove({ id: id })
 			.exec(function (err, result) {
 					if (err) { throw err; }
 
 					res.json(result);
-				//	res.redirect('/')
-				}
-			);
+			});
 	};
 	
 	// update poll votes
 	this.udpatePoll = function (req, res) {
+		
 		var id = req.params.id;
-
-		console.log(req.body);console.log('tt')
+		var option = req.body.option; console.log(req.body);
+		var options = {};
+		
 		Polls
-			.findOneAndUpdate({ id: id }, { })
+			.find({ id: id }, { '_id': false })
 			.exec(function (err, result) {
-					if (err) { throw err; }
+				if (err) { throw err; } console.log(result)
 
-				//	res.json(result);
-					res.redirect('/poll/' + id)
-				}
-			);
+				options = result[0].options; 
+				options[option]++;console.log(options)
+				
+				Polls
+					.findOneAndUpdate({ id: id }, { $set: { options: options }})
+					.exec(function (err, result) {
+							if (err) { throw err; }
+		
+							res.redirect('/poll/' + id)
+					});
+			});
 	};
 
 }

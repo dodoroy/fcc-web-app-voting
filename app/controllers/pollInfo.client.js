@@ -18,29 +18,35 @@
     ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, showPollInfo));
     
     function showPollInfo (data) {console.log(data)
+    
         var poll = JSON.parse(data)[0];console.log(poll)
-        $('form').attr('action', apiUrl)
-        $('.poll-name').html(poll.pollname);
-        for (var i = 0; i < 2; i++) {
-            for (var key in poll.options[i]) {
-                $($('label').get(i)).text(key);
-                $($('.form-check-input').get(i)).attr('value', key);
-            }
-                
-        }
-        renderChart(poll.options)
-    }
-
-    function renderChart(options) {
+        
         var labels = [];
         var chartData = [];
-        for(var i = 0; i < options.length; i++) {
-            var option = options[i];
-            for (var key in option) {
-                labels.push(key);
-                chartData.push(option[key]);
-            }
+        
+        $('form').attr('action', apiUrl)
+        $('.poll-name').html(poll.pollname);
+        
+        var i = 0;
+        for (var key in poll.options) {
+            
+            var value = poll.options[key];
+            
+            $($('label').get(i)).text(key);
+            $($('.form-check-input').get(i)).attr('value', key);
+            $($('.option-val').get(i)).text(value);
+            
+            labels.push(key);
+            chartData.push(value);
+            
+            i++;
         }
+        
+        renderChart(labels, chartData)
+    }
+
+    function renderChart(labels, chartData) {
+        
         var config = {
             type: 'pie',
             data: {

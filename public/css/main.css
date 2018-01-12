@@ -204,12 +204,20 @@ span {
 	margin: 0;
 }
 
-#poll-list span {
+#poll-list span,
+#poll-list a.del {
 	display: inline-block;
-	width: 100px;
+	width: 130px;
 	float: right;
+}
+#poll-list a.del {
+	width: 50px; 
+	font-size: .8em;
 }
 .chart-wrapper {
 	width: 60%;
 	min-width: 300px;
+}
+.option-val {
+	display: none;	
 }

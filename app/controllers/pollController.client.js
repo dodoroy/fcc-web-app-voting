@@ -9,14 +9,13 @@
 
    function updatePollList (data) {
       var polls = JSON.parse(data);
-       var html=''
-      for(var i=0;i<polls.length;i++) {
+       var html = '';
+      for(var i = 0; i < polls.length; i++) {
          var poll = polls[i]
-         html += '<li class="list-group-item"><a href="/poll/'+poll.id+'">'+poll.pollname+'</a>'
-         for(var j = 0; j < poll.options.length; j++) {
-            var option = poll.options[j];
-            for (var key in option)
-               html += '<span>' + key + ':' + option[key] + '</span>';
+         html += '<li class="list-group-item"><a href="/poll/'+poll.id+'">'+poll.pollname+'</a><a class="del" href="#" data-id="'+poll.id+'">delete</a>'
+         for(var key in poll.options) {
+
+               html += '<span>' + key + ':' + poll.options[key] + '</span>';
          }
          html += '</li>';
       }
@@ -26,6 +25,21 @@
 
    ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, updatePollList));
 
+   $('body').delegate('.del', 'click', function(e) {
+      
+      var $this = $(this);
+      
+      e.preventDefault();
+      
+      var id = $(this).data('id');
+      var delUrl = apiUrl + '/' + id;
+      
+      ajaxFunctions.ajaxRequest('DELETE', delUrl, function(data) {
+         var tmp = JSON.parse(data);
+         if (tmp.ok == 1)
+            $this.parent('li').remove();
+      })
+   });
 /*if(addButton) {
     addButton.addEventListener('click', function () {
 
